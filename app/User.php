@@ -17,4 +17,8 @@
         protected $guarded = [];
 
         public $timestamps = false;
+
+        public function todos() {
+            return $this->hasMany(ToDo::class, 'userId', 'id')->select('id', 'title', 'completed', 'createdOn');
+        }
     }
