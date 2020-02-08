@@ -26,6 +26,8 @@
                 $table->boolean('completed')->default('false');
 
                 $table->timestamp('createdOn')->default(DB::raw('CURRENT_TIMESTAMP'));
+
+                $table->foreign('userId')->references('id')->on('users')->onDelete('restrict')->onUpdate('cascade');
             });
         }
 
