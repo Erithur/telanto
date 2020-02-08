@@ -1,28 +1,53 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+    /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\User;
-use Faker\Generator as Faker;
-use Illuminate\Support\Str;
+    use \GuzzleHttp\Client;
 
-/*
-|--------------------------------------------------------------------------
-| Model Factories
-|--------------------------------------------------------------------------
-|
-| This directory should contain each of the model factory definitions for
-| your application. Factories provide a convenient way to generate new
-| model instances for testing / seeding your application's database.
-|
-*/
+    /* Modelo */
 
-$factory->define(User::class, function (Faker $faker) {
-    return [
-        'name' => $faker->name,
-        'email' => $faker->unique()->safeEmail,
-        'email_verified_at' => now(),
-        'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-        'remember_token' => Str::random(10),
-    ];
-});
+    use App\User;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Model Factories
+    |--------------------------------------------------------------------------
+    |
+    | This directory should contain each of the model factory definitions for
+    | your application. Factories provide a convenient way to generate new
+    | model instances for testing / seeding your application's database.
+    |
+    */
+
+    $factory->define(User::class, function() {
+
+
+        $client = new Client();
+
+        $usersQuery = $client->request('GET', 'https://jsonplaceholder.typicode.com/users', []);
+
+        $users = $usersQuery->getBody();
+        $users = json_decode($users, true);
+
+        foreach($users AS $user) {
+
+            $user['address_street'] = $user['address']['street'];
+            $user['address_suite'] = $user['address']['suite'];
+            $user['address_city'] = $user['address']['city'];
+            $user['address_zipcode'] = $user['address']['zipcode'];
+            $user['address_geo_lat'] = $user['address']['geo']['lat'];
+            $user['address_geo_lng'] = $user['address']['geo']['lng'];
+
+            unset($user['address']);
+
+            $user['company_name'] = $user['company']['name'];
+            $user['company_catchPhrase'] = $user['company']['catchPhrase'];
+            $user['company_bs'] = $user['company']['bs'];
+
+            unset($user['company']);
+
+            User::store($user);
+        }
+
+        return [];
+    });
