@@ -13,7 +13,5 @@
             User::updateOrCreate([
                 'id' => $data['id']
             ], $data);
-
-            echo "Trait executed";
         }
     }

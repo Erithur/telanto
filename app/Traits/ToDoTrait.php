@@ -15,7 +15,5 @@
             ToDo::updateOrCreate([
                 'id' => $id
             ], $data);
-
-            echo "Trait executed";
         }
     }

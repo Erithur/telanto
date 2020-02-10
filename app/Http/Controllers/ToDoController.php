@@ -36,10 +36,17 @@
 
         public function store(Request $request) {
 
-            ToDo::store($request->validate([
-                'userId' => ['required', 'integer', 'exists:users,id'],
+            $request->validate([
+                'user_id' => ['required', 'integer', 'exists:users,id'],
                 'title' => ['required', 'string']
-            ]));
+            ]);
+
+            ToDo::store([
+                'userId' => $request->user_id,
+                'title' => $request->title
+            ]);
+
+            return response()->json()->setStatusCode(200);
         }
 
         /**

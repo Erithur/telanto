@@ -25,7 +25,7 @@
         */
 
         protected function schedule(Schedule $schedule) {
-            $schedule->command('db:seed --class=UserSeeder')->cron('* * * * *');
+            $schedule->command('db:seed')->everyMinute();
         }
 
         /**
